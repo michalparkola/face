@@ -1,0 +1,33 @@
+#!/usr/bin/python2
+
+from FaceEmbedding import getRep
+import os
+from sys import argv
+
+# Assumption: all regular files in this directory are image files with faces in them.
+def representKnownFaces(knownFacesDir):
+    knownFaces = {}
+    for f in os.listdir(knownFacesDir):
+        imgPath = os.path.join(knownFacesDir, f)
+        if (os.path.isfile(imgPath)):
+            name = os.path.splitext(f)[0]
+            rep = getRep(imgPath)
+            knownFaces[name] = (f, rep)
+    return knownFaces
+
+def pickleFaces(knownFaces):
+    import pickle
+    fp = open("../data/knownFaces.pickle", "w")
+    pickle.dump(knownFaces, fp)
+    fp.close()
+
+def main(knownFacesDir):
+    knownFaces = representKnownFaces(knownFacesDir)
+    print(knownFaces)
+    pickleFaces(knownFaces)
+
+if __name__ == "__main__":
+    if (len(argv) != 2):
+        print ("Usage: pickleFaces knownFacesDir")
+    else:
+        main(argv[1])

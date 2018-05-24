@@ -1,0 +1,17 @@
+<h3>Captured image</h3>
+    <img src="data:image/png;base64,{{pic}}">
+<h3>Representation of this face</h3>
+{{who}}
+<h3>I believe this is</h3>
+{{probably}}
+<h3>Distances to all known faces</h3>
+
+<table border="1">
+    {% for name in faces %}
+        <tr>
+            <td>{{ name }}</td>
+            <td align="center"><img width="100px" src="static/knownfaces/{{faces[name][0]}}"</td>
+            <td>{{ distances[name] }}</td>
+        </tr>
+    {% endfor %}
+</table>

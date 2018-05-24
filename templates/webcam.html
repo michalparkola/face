@@ -1,0 +1,63 @@
+
+<!doctype html>
+
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>9LivesData FaceTime - WebCam</title>
+
+	<style type="text/css">
+		body { font-family: Helvetica, sans-serif; }
+		h2, h3 { margin-top:0; }
+		form { margin-top: 15px; }
+		form > input { margin-right: 15px; }
+		#results { float:right; margin:20px; padding:20px; border:1px solid; background:#ccc; }
+	</style>
+
+	<script type="text/javascript" src="static/webcam.js"></script>
+
+	<script language="JavaScript">
+
+		function take_snapshot() {
+			Webcam.snap(function(data_uri) {
+				document.getElementById('results').innerHTML = 
+					'<h2>Here is your image:</h2>' + 
+					'<img src="'+data_uri+'"/>';
+			});
+		}
+
+		function upload_snapshot() {
+			Webcam.snap( function(data_uri) {
+    			var raw_image_data = data_uri.replace(/^data\:image\/\w+\;base64\,/, '');
+    
+    			document.getElementById('webcam_pic').value = raw_image_data;
+    			document.getElementById('sendImgForRecognition').submit();
+			});
+		}
+	</script>
+
+</head>
+<body>
+	<h1>9LivesData FaceTime WebCamJS Test Page</h1>
+	
+	<div id="results">Your captured image will appear here...</div>
+	<div id="my_camera"></div>
+
+	<script language="JavaScript">
+		Webcam.set({
+			width: 320,
+			height: 240,
+			image_format: 'jpeg',
+			jpeg_quality: 90
+		});
+		Webcam.attach( '#my_camera' );
+	</script>
+	
+	<form id='sendImgForRecognition' method='post' action='recognize'>
+		<input id="webcam_pic" type="hidden" name="webcam_pic" value=""/>
+		<input type=button value="Take Snapshot" onClick="take_snapshot()">
+		<input type=button value="Upload Snapshot" onClick="upload_snapshot()">
+	</form>
+	
+</body>
+</html>

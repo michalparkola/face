@@ -1,0 +1,9 @@
+<table border="1">
+    {% for name in knownFaces %}
+        <tr>
+            <td>{{ name }}</td>
+            <td align="center"><img width="100px" src="static/knownfaces/{{knownFaces[name][0]}}"</td>
+            <td>{{ knownFaces[name][1] }}</td>
+        </tr>
+    {% endfor %}
+</table>

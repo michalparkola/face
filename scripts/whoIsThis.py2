@@ -1,0 +1,47 @@
+#!/usr/bin/python2
+
+from FaceEmbedding import getRep
+
+import os
+import argparse
+import numpy as np
+
+def unpickleKnownFaces(knownFacesPickle):
+    """
+    Loads the OpenFace embeddings (reps) of known faces from knownFacesPickle.
+    
+    Arguments:
+        knownFacesPickle - filename to pickle file where known OpenFace embeddings of known faces are stored.
+
+    Returns a dictionary {lastName: (imgPath, rep)}."""
+
+    import pickle
+    fp = open(knownFacesPickle, "r")
+    knownFaces = pickle.load(fp)
+    fp.close()
+    return knownFaces
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('imgs', type=str, nargs='+', help="Input images.")
+    args = parser.parse_args()
+
+    knownFaces = unpickleKnownFaces("./knownFaces.pickle")
+    whoIsThisPath = args.imgs[0]
+    whoIsThisRep = getRep(whoIsThisPath)
+    distanceToWhoIsThis = {}
+
+    for isThisHer in knownFaces:
+        isThisHerPath, isThisHerRep = knownFaces[isThisHer]
+        d = isThisHerRep - whoIsThisRep
+        l2DistanceBetweenWhoIsThisAndIsThisHer = np.dot(d, d)
+
+        isThisHerName = os.path.splitext(isThisHer)[0]
+        print("Comparing {} with {}, distance = {:0.3f}".format(whoIsThisPath, isThisHerName, l2DistanceBetweenWhoIsThisAndIsThisHer))
+        distanceToWhoIsThis[isThisHer] = l2DistanceBetweenWhoIsThisAndIsThisHer
+
+    probablyHer = min(distanceToWhoIsThis, key=distanceToWhoIsThis.get)
+    print(probablyHer, distanceToWhoIsThis[probablyHer])
+
+if __name__ == "__main__":
+    main()
